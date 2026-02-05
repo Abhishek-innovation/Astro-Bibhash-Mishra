@@ -78,7 +78,7 @@ const Hero: React.FC = () => {
         {/* Stats / Social Proof - Minimalist */}
         <div className="mt-20 flex flex-wrap justify-center gap-8 md:gap-16 text-white/60 animate-in fade-in duration-1000 delay-500">
           <div className="text-center min-w-[80px]">
-            <div className="text-2xl md:text-3xl font-bold text-white mb-1">15k+</div>
+            <div className="text-2xl md:text-3xl font-bold text-white mb-1">75k+</div>
             <div className="text-xs uppercase tracking-wider font-medium">Charts Analyzed</div>
           </div>
           <div className="text-center min-w-[80px]">
@@ -86,7 +86,7 @@ const Hero: React.FC = () => {
              <div className="text-xs uppercase tracking-wider font-medium">Satisfaction</div>
           </div>
            <div className="text-center min-w-[80px]">
-             <div className="text-2xl md:text-3xl font-bold text-white mb-1">12+</div>
+             <div className="text-2xl md:text-3xl font-bold text-white mb-1">24+</div>
              <div className="text-xs uppercase tracking-wider font-medium">Years Exp.</div>
           </div>
         </div>
