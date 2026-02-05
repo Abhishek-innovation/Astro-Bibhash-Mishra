@@ -2,53 +2,53 @@ import { Service } from './types';
 
 export const SERVICES: Service[] = [
   {
-    id: 'voice-15',
-    title: 'Astrology Voice Recording (15 Min)',
-    description: 'Concise analysis of your chart with key predictions.',
-    duration: '15 Minutes',
-    price: 3000
-  },
-  {
-    id: 'voice-30',
-    title: 'Astrology Voice Recording (30 Min)',
-    description: 'Detailed reading covering major life aspects.',
-    duration: '30 Minutes',
-    price: 5100
-  },
-  {
     id: 'voice-45',
     title: 'Astrology Voice Recording (45 Min)',
     description: 'In-depth analysis including dasha periods and remedies.',
     duration: '45 Minutes',
-    price: 7500
+    price: 11000
   },
   {
     id: 'voice-60',
     title: 'Astrology Voice Recording (1 Hour)',
     description: 'Comprehensive life reading with extensive Q&A coverage.',
     duration: '1 Hour',
-    price: 11000
+    price: 21000
+  },
+  {
+    id: 'call-15',
+    title: 'Telephonic Call Session (15 Min)',
+    description: 'Quick consultation to discuss immediate specific questions.',
+    duration: '15 Minutes',
+    price: 5100
   },
   {
     id: 'call-30',
-    title: 'Telephonic Call Session',
-    description: 'Live conversation to discuss your specific concerns.',
+    title: 'Telephonic Call Session (30 Min)',
+    description: 'Live conversation to discuss your specific concerns in detail.',
     duration: '30 Minutes',
-    price: 5700
+    price: 11000
+  },
+  {
+    id: 'call-45',
+    title: 'Telephonic Call Session (45 Min)',
+    description: 'Premium extended session for complete chart analysis and guidance.',
+    duration: '45 Minutes',
+    price: 51000
   },
   {
     id: 'vastu',
     title: 'Vastu Consultation',
     description: 'Analysis of your living or workspace for positive energy flow.',
     duration: 'Consultation',
-    price: 6600
+    price: 21000
   },
   {
     id: 'motivation',
-    title: 'Motivation Voice Recording',
+    title: 'Motivation Voice Recording (1 Hour)',
     description: 'Astrological guidance combined with motivational coaching and live examples.',
-    duration: 'Session',
-    price: 12000
+    duration: '1 Hour',
+    price: 51000
   }
 ];
 
