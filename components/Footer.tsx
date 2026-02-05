@@ -35,10 +35,15 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-white">Contact Us</h4>
             <div className="flex flex-col space-y-3 text-sm">
-              <a href="#" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
-                <Phone size={18} className="text-amber-500" /> +91 98765 43210
+              <a href="tel:+919955957433" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
+                <Phone size={18} className="text-amber-500" /> +91 99559 57433
               </a>
-              <a href="#" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
+              <a 
+                href="https://wa.me/919955957433?text=Hello" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors"
+              >
                 <MessageCircle size={18} className="text-amber-500" /> WhatsApp Support
               </a>
               <a href="#" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">

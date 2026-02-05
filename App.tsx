@@ -7,6 +7,8 @@ import HowItWorks from './components/HowItWorks';
 import Testimonials from './components/Testimonials';
 import BookingForm from './components/BookingForm';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import WhatsAppButton from './components/WhatsAppButton';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +23,8 @@ const App: React.FC = () => {
         <BookingForm />
       </main>
       <Footer />
+      <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 };
