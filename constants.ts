@@ -2,6 +2,13 @@ import { Service } from './types';
 
 export const SERVICES: Service[] = [
   {
+    id: 'voice-30',
+    title: 'Astrology Voice Recording (30 Min)',
+    description: 'Detailed reading covering major life aspects.',
+    duration: '30 Minutes',
+    price: 5100
+  },
+  {
     id: 'voice-45',
     title: 'Astrology Voice Recording (45 Min)',
     description: 'In-depth analysis including dasha periods and remedies.',
