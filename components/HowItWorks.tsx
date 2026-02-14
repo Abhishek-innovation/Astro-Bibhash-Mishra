@@ -1,5 +1,5 @@
 import React from 'react';
-import { MousePointerClick, FileText, CreditCard, MessageCircle } from 'lucide-react';
+import { MousePointerClick, FileText, Send, MessageCircle } from 'lucide-react';
 
 const steps = [
   {
@@ -13,9 +13,9 @@ const steps = [
     description: "Fill in your birth details and upload palm/current photos."
   },
   {
-    icon: <CreditCard size={32} />,
-    title: "3. Secure Payment",
-    description: "Complete the payment via UPI, Card, or Netbanking."
+    icon: <Send size={32} />,
+    title: "3. Review & Submit",
+    description: "Review your details and submit the form securely."
   },
   {
     icon: <MessageCircle size={32} />,

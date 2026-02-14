@@ -38,6 +38,15 @@
             boxShadow: {
               'glow': '0 0 20px rgba(255, 193, 7, 0.5)',
               'card': '0 10px 30px -5px rgba(0, 0, 0, 0.05)',
+            },
+            animation: {
+              'marquee': 'marquee 40s linear infinite',
+            },
+            keyframes: {
+              marquee: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
+              }
             }
           }
         }

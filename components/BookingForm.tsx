@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { SERVICES } from '../constants';
 import { BookingStatus, FormData } from '../types';
-import { Upload, CheckCircle, AlertCircle, Lock, Loader2, Check, X, ArrowRight, ArrowLeft, Sparkles, ScanLine } from 'lucide-react';
+import { Upload, CheckCircle, Send, Loader2, Check, X, ArrowRight, ArrowLeft, Sparkles, ScanLine } from 'lucide-react';
 
 const steps = [
   { id: 1, title: 'Choose Service', icon: Sparkles },
   { id: 2, title: 'Your Details', icon: CheckCircle },
   { id: 3, title: 'Upload Data', icon: Upload },
-  { id: 4, title: 'Review & Pay', icon: Lock },
+  { id: 4, title: 'Review & Submit', icon: Send },
 ];
 
 const BookingForm: React.FC = () => {
@@ -182,14 +182,14 @@ const BookingForm: React.FC = () => {
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-600 mx-auto mb-8 shadow-xl shadow-green-100">
             <CheckCircle size={48} />
           </div>
-          <h2 className="text-4xl font-serif font-bold text-slate-900 mb-4">Payment Successful!</h2>
+          <h2 className="text-4xl font-serif font-bold text-slate-900 mb-4">Submission Successful!</h2>
           <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-            Your journey to clarity has begun, <strong>{formData.fullName}</strong>. <br/>
-            We have securely received your charts and payment of <strong>₹{selectedService.price.toLocaleString('en-IN')}</strong>.
+            Thank you, <strong>{formData.fullName}</strong>. <br/>
+            We have securely received your charts and submission of form information.
           </p>
           <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100 mb-8">
              <p className="text-sm text-slate-500">
-               A confirmation has been sent to your details. Astro Bibhash Mishra will personally review your data and contact you within 24-48 hours.
+               Astro Bibhash Mishra will personally review your data and contact you within 24-48 hours.
              </p>
           </div>
           <button 
@@ -227,9 +227,9 @@ const BookingForm: React.FC = () => {
               <div className="relative w-20 h-20 mx-auto mb-8">
                  <div className="absolute inset-0 border-4 border-stone-100 rounded-full"></div>
                  <div className="absolute inset-0 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                 <Lock className="absolute inset-0 m-auto text-amber-600" size={24} />
+                 <Send className="absolute inset-0 m-auto text-amber-600" size={24} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Processing Secure Payment</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Processing Form Submission</h3>
               <p className="text-slate-500">Please do not close this window...</p>
            </div>
         </section>
@@ -466,7 +466,7 @@ const BookingForm: React.FC = () => {
                   onClick={handleSubmit}
                   className="w-full md:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-amber-600/30 hover:shadow-xl hover:scale-105 transition-all"
                 >
-                  Pay Securely <Lock size={18} />
+                  Submit Form <Send size={18} />
                 </button>
               )}
            </div>
