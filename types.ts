@@ -19,7 +19,6 @@ export interface FormData {
 export enum BookingStatus {
   IDLE = 'IDLE',
   SUBMITTING = 'SUBMITTING',
-  PAYMENT = 'PAYMENT',
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR'
 }

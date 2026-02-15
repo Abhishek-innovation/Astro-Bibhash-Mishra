@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SERVICES } from '../constants';
 import { BookingStatus, FormData } from '../types';
-import { CheckCircle, Send, Loader2, Check, ArrowRight, ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
+import { CheckCircle, Send, Check, ArrowRight, ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
 
 const steps = [
   { id: 1, title: 'Choose Service', icon: Sparkles },
@@ -50,7 +50,7 @@ const BookingForm: React.FC = () => {
     }
     setCurrentStep(prev => Math.min(prev + 1, steps.length));
     
-    // Smooth scroll to top of booking section with offset for header
+    // Smooth scroll to top of booking section
     const bookingSection = document.getElementById('booking');
     if (bookingSection) {
       const headerOffset = 100;
@@ -87,7 +87,7 @@ const BookingForm: React.FC = () => {
     submissionData.append('Specific Questions', formData.questions || 'None');
 
     try {
-      // Create a timeout promise
+      // Create a timeout promise to prevent hanging
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Request timeout')), 30000)
       );

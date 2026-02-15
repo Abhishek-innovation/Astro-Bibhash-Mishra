@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 pb-40">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 pt-28 pb-32 md:pt-32 md:pb-40">
       {/* Background Image & Effects */}
       <div className="absolute inset-0 w-full h-full">
         <img 
@@ -34,7 +34,7 @@ const Hero: React.FC = () => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-32 text-center">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
         
         {/* Trust/Badge Element - Glassmorphism with Gradient Border */}
         <div className="inline-flex items-center gap-2 bg-white/5 text-amber-200 px-6 py-2 rounded-full mb-8 border border-white/10 backdrop-blur-md animate-in fade-in zoom-in duration-1000 shadow-[0_0_15px_rgba(251,191,36,0.1)] relative overflow-hidden group">

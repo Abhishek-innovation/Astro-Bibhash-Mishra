@@ -5,17 +5,17 @@ const steps = [
   {
     icon: <MousePointerClick size={32} />,
     title: "1. Select Service",
-    description: "Choose the consultation type that suits your requirements."
+    description: "Choose the consultation type that suits your needs."
   },
   {
     icon: <FileText size={32} />,
-    title: "2. Share Details",
-    description: "Fill in your birth details and specific questions."
+    title: "2. Your Details",
+    description: "Provide birth details and your WhatsApp number."
   },
   {
     icon: <MessageCircle size={32} />,
     title: "3. Get Solutions",
-    description: "Receive detailed analysis and remedies within 24-48 hours."
+    description: "Receive detailed analysis via WhatsApp within 24-48 hours."
   }
 ];
 
