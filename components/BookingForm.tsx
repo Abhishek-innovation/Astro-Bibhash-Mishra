@@ -100,9 +100,47 @@ const BookingForm: React.FC = () => {
 
   const handleSubmit = async () => {
     setStatus(BookingStatus.SUBMITTING);
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    setStatus(BookingStatus.SUCCESS);
+    
+    const submissionData = new FormData();
+    submissionData.append('Name', formData.fullName);
+    submissionData.append('Date of Birth', formData.dateOfBirth);
+    submissionData.append('Time of Birth', formData.timeOfBirth);
+    submissionData.append('Place of Birth', formData.placeOfBirth);
+    
+    // Add Service Details
+    const service = SERVICES.find(s => s.id === formData.serviceId);
+    submissionData.append('Selected Service', service ? service.title : formData.serviceId);
+    submissionData.append('Price', service ? `₹${service.price}` : '');
+    
+    submissionData.append('Specific Questions', formData.questions || 'None');
+
+    // Append files
+    if (formData.leftPalm) submissionData.append('Left Palm', formData.leftPalm);
+    if (formData.rightPalm) submissionData.append('Right Palm', formData.rightPalm);
+    if (formData.currentPhoto) submissionData.append('Current Photo', formData.currentPhoto);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xreaqarn", {
+        method: "POST",
+        body: submissionData,
+        headers: {
+            'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setStatus(BookingStatus.SUCCESS);
+      } else {
+        const errorData = await response.json();
+        console.error("Form submission error:", errorData);
+        alert("There was a problem submitting your form. Please try again.");
+        setStatus(BookingStatus.IDLE);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Network error. Please check your internet connection and try again.");
+      setStatus(BookingStatus.IDLE);
+    }
   };
 
   const renderFileInput = (label: string, fieldName: keyof FormData, file: File | null) => {
