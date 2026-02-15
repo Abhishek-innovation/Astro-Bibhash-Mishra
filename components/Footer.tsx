@@ -67,7 +67,9 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
-          <p className="mb-2">© {new Date().getFullYear()} Astro Bibhash Mishra. All rights reserved.</p>
+          <p className="mb-2">
+            © 2026 Astro Bibhash Mishra. All rights reserved. | Developed by <a href="https://clickaarambh.com" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-amber-400 transition-colors">Click Aarambh</a>
+          </p>
           <p>
             Disclaimer: Astrology is a guidance tool. Predictions are based on planetary positions and individual interpretation. Results may vary.
           </p>
