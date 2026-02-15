@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 pb-40">
       {/* Background Image & Effects */}
       <div className="absolute inset-0 w-full h-full">
         <img 
@@ -34,7 +34,7 @@ const Hero: React.FC = () => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-24 pb-12 text-center">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-32 text-center">
         
         {/* Trust/Badge Element - Glassmorphism with Gradient Border */}
         <div className="inline-flex items-center gap-2 bg-white/5 text-amber-200 px-6 py-2 rounded-full mb-8 border border-white/10 backdrop-blur-md animate-in fade-in zoom-in duration-1000 shadow-[0_0_15px_rgba(251,191,36,0.1)] relative overflow-hidden group">
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
           Astro Bibhash Mishra
         </h1>
         
-        <p className="text-lg md:text-2xl text-slate-200 font-medium max-w-3xl mx-auto mb-12 leading-relaxed opacity-90 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
+        <p className="text-lg md:text-2xl text-slate-200 font-medium max-w-4xl mx-auto mb-12 leading-relaxed opacity-90 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
           Professional Consultant guiding you towards <span className="text-amber-400 font-bold">Clarity</span>, <span className="text-amber-400 font-bold">Prosperity</span>, and <span className="text-amber-400 font-bold">Peace</span>.
         </p>
 

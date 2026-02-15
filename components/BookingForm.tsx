@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { SERVICES } from '../constants';
 import { BookingStatus, FormData } from '../types';
-import { Upload, CheckCircle, Send, Loader2, Check, X, ArrowRight, ArrowLeft, Sparkles, ScanLine } from 'lucide-react';
+import { CheckCircle, Send, Loader2, Check, ArrowRight, ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
 
 const steps = [
   { id: 1, title: 'Choose Service', icon: Sparkles },
   { id: 2, title: 'Your Details', icon: CheckCircle },
-  { id: 3, title: 'Upload Data', icon: Upload },
-  { id: 4, title: 'Review & Submit', icon: Send },
+  { id: 3, title: 'Review & Submit', icon: Send },
 ];
 
 const BookingForm: React.FC = () => {
   const [status, setStatus] = useState<BookingStatus>(BookingStatus.IDLE);
   const [currentStep, setCurrentStep] = useState(1);
-  const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
-  const [aiAnalyzing, setAiAnalyzing] = useState<Record<string, boolean>>({});
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Initialize form state
   const [formData, setFormData] = useState<FormData>({
@@ -22,11 +20,9 @@ const BookingForm: React.FC = () => {
     dateOfBirth: '',
     timeOfBirth: '',
     placeOfBirth: '',
+    whatsappNumber: '',
     serviceId: SERVICES[0].id,
     questions: '',
-    leftPalm: null,
-    rightPalm: null,
-    currentPhoto: null,
   });
 
   const selectedService = SERVICES.find(s => s.id === formData.serviceId) || SERVICES[0];
@@ -44,37 +40,11 @@ const BookingForm: React.FC = () => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof FormData) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      e.target.value = ''; // Reset to allow re-selection
-      
-      setUploadingFiles(prev => ({ ...prev, [fieldName]: true }));
-      
-      // Simulate Upload then AI Analysis
-      setTimeout(() => {
-        setUploadingFiles(prev => ({ ...prev, [fieldName]: false }));
-        setAiAnalyzing(prev => ({ ...prev, [fieldName]: true }));
-        
-        setTimeout(() => {
-           setAiAnalyzing(prev => ({ ...prev, [fieldName]: false }));
-           setFormData(prev => ({ ...prev, [fieldName]: file }));
-        }, 1500); // AI Analysis time
-      }, 800); // Upload time
-    }
-  };
-
-  const removeFile = (e: React.MouseEvent, fieldName: keyof FormData) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFormData(prev => ({ ...prev, [fieldName]: null }));
-  };
-
   const nextStep = () => {
-    // Basic validation
+    // Validation for Step 2
     if (currentStep === 2) {
-      if (!formData.fullName || !formData.dateOfBirth || !formData.timeOfBirth || !formData.placeOfBirth) {
-        alert("Please fill in all required fields.");
+      if (!formData.fullName || !formData.dateOfBirth || !formData.timeOfBirth || !formData.placeOfBirth || !formData.whatsappNumber) {
+        alert("Please fill in all required fields, including WhatsApp number.");
         return;
       }
     }
@@ -100,12 +70,14 @@ const BookingForm: React.FC = () => {
 
   const handleSubmit = async () => {
     setStatus(BookingStatus.SUBMITTING);
+    setErrorMessage("");
     
     const submissionData = new FormData();
     submissionData.append('Name', formData.fullName);
     submissionData.append('Date of Birth', formData.dateOfBirth);
     submissionData.append('Time of Birth', formData.timeOfBirth);
     submissionData.append('Place of Birth', formData.placeOfBirth);
+    submissionData.append('WhatsApp Number', formData.whatsappNumber);
     
     // Add Service Details
     const service = SERVICES.find(s => s.id === formData.serviceId);
@@ -114,13 +86,13 @@ const BookingForm: React.FC = () => {
     
     submissionData.append('Specific Questions', formData.questions || 'None');
 
-    // Append files
-    if (formData.leftPalm) submissionData.append('Left Palm', formData.leftPalm);
-    if (formData.rightPalm) submissionData.append('Right Palm', formData.rightPalm);
-    if (formData.currentPhoto) submissionData.append('Current Photo', formData.currentPhoto);
-
     try {
-      const response = await fetch("https://formspree.io/f/xreaqarn", {
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 30000)
+      );
+
+      const fetchPromise = fetch("https://formspree.io/f/xreaqarn", {
         method: "POST",
         body: submissionData,
         headers: {
@@ -128,88 +100,26 @@ const BookingForm: React.FC = () => {
         }
       });
 
+      // Race against the timeout
+      const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+
       if (response.ok) {
         setStatus(BookingStatus.SUCCESS);
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         console.error("Form submission error:", errorData);
-        alert("There was a problem submitting your form. Please try again.");
-        setStatus(BookingStatus.IDLE);
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+            setErrorMessage(errorData.errors.map((e: any) => e.message).join(", "));
+        } else {
+            setErrorMessage("There was a problem submitting your form. Please try again.");
+        }
+        setStatus(BookingStatus.ERROR);
       }
     } catch (error) {
       console.error("Network error:", error);
-      alert("Network error. Please check your internet connection and try again.");
-      setStatus(BookingStatus.IDLE);
+      setErrorMessage("Network error. Please check your internet connection and try again.");
+      setStatus(BookingStatus.ERROR);
     }
-  };
-
-  const renderFileInput = (label: string, fieldName: keyof FormData, file: File | null) => {
-    const isUploading = uploadingFiles[fieldName];
-    const isAnalyzing = aiAnalyzing[fieldName];
-    
-    return (
-      <div className={`relative border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-300 h-full flex flex-col justify-center items-center overflow-hidden min-h-[160px] ${
-        file ? 'border-green-500 bg-green-50/30' : 'border-stone-200 hover:border-amber-400 hover:bg-stone-50'
-      }`}>
-        {/* Background Animation for AI Analysis */}
-        {isAnalyzing && (
-            <div className="absolute inset-0 bg-amber-500/5 backdrop-blur-sm z-10 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-400/20 to-transparent animate-scan"></div>
-            </div>
-        )}
-
-        {file && !isUploading && !isAnalyzing && (
-           <button
-             type="button"
-             onClick={(e) => removeFile(e, fieldName)}
-             className="absolute top-2 right-2 bg-white text-slate-400 hover:text-red-500 rounded-full p-2 shadow-sm transition-colors z-20 border border-slate-100"
-             title="Remove file"
-           >
-             <X size={16} />
-           </button>
-        )}
-
-        <label className={`cursor-pointer block w-full h-full relative z-10 flex flex-col items-center justify-center`}>
-          <input 
-            type="file" 
-            className="hidden" 
-            onChange={(e) => handleFileChange(e, fieldName)} 
-            accept="image/png, image/jpeg, image/jpg"
-            disabled={isUploading || isAnalyzing} 
-          />
-          
-          {isUploading ? (
-            <div className="flex flex-col items-center animate-pulse">
-              <Loader2 size={32} className="text-amber-600 animate-spin mb-3" />
-              <span className="text-sm font-medium text-slate-500">Uploading...</span>
-            </div>
-          ) : isAnalyzing ? (
-            <div className="flex flex-col items-center">
-               <ScanLine size={32} className="text-amber-600 animate-pulse mb-3" />
-               <span className="text-sm font-bold text-amber-600">AI Analyzing...</span>
-            </div>
-          ) : file ? (
-            <div className="flex flex-col items-center animate-in zoom-in duration-300">
-               <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white mb-3 shadow-md shadow-green-500/20">
-                 <Check size={20} strokeWidth={3} />
-               </div>
-               <span className="text-sm font-bold text-slate-800">{label}</span>
-               <p className="text-xs text-green-700 bg-green-100 px-3 py-1 rounded-full mt-2 font-medium truncate max-w-[150px]">
-                 {file.name}
-               </p>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center group">
-              <div className="w-12 h-12 rounded-full bg-stone-100 group-hover:bg-amber-100 flex items-center justify-center mb-3 transition-colors duration-300">
-                <Upload size={20} className="text-slate-400 group-hover:text-amber-600" />
-              </div>
-              <span className="text-sm font-bold text-slate-700">{label}</span>
-              <span className="text-xs text-slate-500 mt-1">Tap to select image</span>
-            </div>
-          )}
-        </label>
-      </div>
-    );
   };
 
   // Success State
@@ -223,11 +133,11 @@ const BookingForm: React.FC = () => {
           <h2 className="text-4xl font-serif font-bold text-slate-900 mb-4">Submission Successful!</h2>
           <p className="text-slate-600 text-lg mb-8 leading-relaxed">
             Thank you, <strong>{formData.fullName}</strong>. <br/>
-            We have securely received your charts and submission of form information.
+            We have securely received your details.
           </p>
           <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100 mb-8">
              <p className="text-sm text-slate-500">
-               Astro Bibhash Mishra will personally review your data and contact you within 24-48 hours.
+               Astro Bibhash Mishra will personally review your chart and contact you via WhatsApp within 24-48 hours.
              </p>
           </div>
           <button 
@@ -239,18 +149,37 @@ const BookingForm: React.FC = () => {
                 dateOfBirth: '',
                 timeOfBirth: '',
                 placeOfBirth: '',
+                whatsappNumber: '',
                 serviceId: SERVICES[0].id,
                 questions: '',
-                leftPalm: null,
-                rightPalm: null,
-                currentPhoto: null,
               });
-              setUploadingFiles({});
-              setAiAnalyzing({});
             }}
             className="inline-flex items-center text-amber-700 font-bold hover:text-amber-800 transition-colors"
           >
             <ArrowLeft size={18} className="mr-2" /> Book Another Consultation
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  // Error State
+  if (status === BookingStatus.ERROR) {
+    return (
+      <section id="booking" className="py-20 bg-white min-h-[50vh] flex items-center justify-center">
+        <div className="text-center max-w-lg mx-auto px-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-8 shadow-xl shadow-red-100">
+            <AlertCircle size={48} />
+          </div>
+          <h2 className="text-3xl font-serif font-bold text-slate-900 mb-4">Submission Failed</h2>
+          <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+            {errorMessage || "Something went wrong while submitting your form. Please try again."}
+          </p>
+          <button 
+            onClick={() => setStatus(BookingStatus.IDLE)}
+            className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-slate-800 transition-all"
+          >
+            Try Again <ArrowRight size={18} />
           </button>
         </div>
       </section>
@@ -292,7 +221,7 @@ const BookingForm: React.FC = () => {
         </div>
 
         {/* Improved Progress Bar System */}
-        <div className="max-w-3xl mx-auto mb-12 px-4 relative">
+        <div className="max-w-2xl mx-auto mb-12 px-4 relative">
           {/* Background Line */}
           <div className="absolute top-5 md:top-6 left-4 right-4 h-1 bg-stone-200 rounded-full -z-10"></div>
           
@@ -308,7 +237,7 @@ const BookingForm: React.FC = () => {
                const isCompleted = currentStep > step.id;
                
                return (
-                 <div key={step.id} className="flex flex-col items-center">
+                 <div key={step.id} className="flex flex-col items-center z-10">
                    <div 
                      className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 border-4 ${
                        isActive ? 'bg-amber-600 border-stone-50 text-white shadow-xl scale-110' : 
@@ -366,10 +295,10 @@ const BookingForm: React.FC = () => {
               {/* Step 2: Personal Details */}
               {currentStep === 2 && (
                 <div className="animate-in fade-in slide-in-from-right-8 duration-500 max-w-3xl mx-auto">
-                   <h4 className="text-2xl font-serif font-bold text-slate-900 mb-6 text-center">Personal Information</h4>
+                   <h4 className="text-2xl font-serif font-bold text-slate-900 mb-6 text-center">Your Details</h4>
                    <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Official Name</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Official Name <span className="text-red-500">*</span></label>
                         <input 
                           type="text" 
                           name="fullName"
@@ -383,7 +312,7 @@ const BookingForm: React.FC = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">Date of Birth</label>
+                            <label className="block text-sm font-bold text-slate-700 mb-2">Date of Birth <span className="text-red-500">*</span></label>
                             <input 
                               type="date" 
                               name="dateOfBirth"
@@ -393,7 +322,7 @@ const BookingForm: React.FC = () => {
                             />
                          </div>
                          <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">Time of Birth</label>
+                            <label className="block text-sm font-bold text-slate-700 mb-2">Time of Birth <span className="text-red-500">*</span></label>
                             <input 
                               type="time" 
                               name="timeOfBirth"
@@ -404,49 +333,48 @@ const BookingForm: React.FC = () => {
                          </div>
                       </div>
 
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-bold text-slate-700 mb-2">Place of Birth <span className="text-red-500">*</span></label>
+                            <input 
+                            type="text" 
+                            name="placeOfBirth"
+                            value={formData.placeOfBirth}
+                            onChange={handleInputChange}
+                            className="w-full p-4 bg-stone-50 border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 outline-none transition-all placeholder:text-stone-400 font-medium text-base text-slate-800"
+                            placeholder="City, State, Country"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-slate-700 mb-2">WhatsApp Number <span className="text-red-500">*</span></label>
+                            <input 
+                            type="tel" 
+                            name="whatsappNumber"
+                            value={formData.whatsappNumber}
+                            onChange={handleInputChange}
+                            className="w-full p-4 bg-stone-50 border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 outline-none transition-all placeholder:text-stone-400 font-medium text-base text-slate-800"
+                            placeholder="e.g. +91 98765 43210"
+                            />
+                        </div>
+                      </div>
+
                       <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Place of Birth</label>
-                        <input 
-                          type="text" 
-                          name="placeOfBirth"
-                          value={formData.placeOfBirth}
-                          onChange={handleInputChange}
-                          className="w-full p-4 bg-stone-50 border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 outline-none transition-all placeholder:text-stone-400 font-medium text-base text-slate-800"
-                          placeholder="City, State, Country"
-                        />
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Specific Questions (Optional)</label>
+                        <textarea 
+                            name="questions"
+                            value={formData.questions}
+                            onChange={handleInputChange}
+                            rows={3}
+                            className="w-full p-4 bg-stone-50 border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 outline-none transition-all placeholder:text-stone-400 resize-none text-base text-slate-800"
+                            placeholder="What specific areas should Astro Bibhash focus on?"
+                        ></textarea>
                       </div>
                    </div>
                 </div>
               )}
 
-              {/* Step 3: Uploads */}
+              {/* Step 3: Review */}
               {currentStep === 3 && (
-                <div className="animate-in fade-in slide-in-from-right-8 duration-500 max-w-4xl mx-auto">
-                   <h4 className="text-2xl font-serif font-bold text-slate-900 mb-2 text-center">Upload Charts & Images</h4>
-                   <p className="text-center text-slate-600 mb-8">AI analysis helps us prepare your chart faster. Please upload clear images.</p>
-                   
-                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 h-auto md:h-64 mb-8">
-                      {renderFileInput('Left Palm', 'leftPalm', formData.leftPalm)}
-                      {renderFileInput('Right Palm', 'rightPalm', formData.rightPalm)}
-                      {renderFileInput('Your Photo', 'currentPhoto', formData.currentPhoto)}
-                   </div>
-
-                   <div className="mt-8">
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Specific Questions (Optional)</label>
-                      <textarea 
-                        name="questions"
-                        value={formData.questions}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full p-4 bg-stone-50 border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 outline-none transition-all placeholder:text-stone-400 resize-none text-base text-slate-800"
-                        placeholder="What specific areas should Astro Bibhash focus on?"
-                      ></textarea>
-                   </div>
-                </div>
-              )}
-
-              {/* Step 4: Review */}
-              {currentStep === 4 && (
                 <div className="animate-in fade-in slide-in-from-right-8 duration-500 max-w-2xl mx-auto">
                    <h4 className="text-2xl font-serif font-bold text-slate-900 mb-6 text-center">Review & Confirm</h4>
                    
@@ -467,6 +395,10 @@ const BookingForm: React.FC = () => {
                            <span className="block font-bold text-slate-900">{formData.dateOfBirth}, {formData.timeOfBirth}</span>
                            <span className="text-xs text-slate-600">{formData.placeOfBirth}</span>
                          </div>
+                      </div>
+                      <div className="flex justify-between items-center pb-4 border-b border-stone-200">
+                         <span className="text-slate-600">WhatsApp</span>
+                         <span className="font-bold text-slate-900">{formData.whatsappNumber}</span>
                       </div>
                       <div className="flex justify-between items-center pt-2">
                          <span className="text-xl font-serif font-bold text-slate-900">Total Amount</span>
@@ -492,7 +424,7 @@ const BookingForm: React.FC = () => {
                 <ArrowLeft size={20} /> Back
               </button>
 
-              {currentStep < 4 ? (
+              {currentStep < 3 ? (
                 <button 
                   onClick={nextStep}
                   className="w-full md:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 hover:scale-105 transition-all"

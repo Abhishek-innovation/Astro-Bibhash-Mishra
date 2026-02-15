@@ -11,11 +11,9 @@ export interface FormData {
   dateOfBirth: string;
   timeOfBirth: string;
   placeOfBirth: string;
+  whatsappNumber: string;
   serviceId: string;
   questions: string;
-  leftPalm: File | null;
-  rightPalm: File | null;
-  currentPhoto: File | null;
 }
 
 export enum BookingStatus {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MousePointerClick, FileText, Send, MessageCircle } from 'lucide-react';
+import { MousePointerClick, FileText, MessageCircle } from 'lucide-react';
 
 const steps = [
   {
@@ -9,18 +9,13 @@ const steps = [
   },
   {
     icon: <FileText size={32} />,
-    title: "2. Provide Details",
-    description: "Fill in your birth details and upload palm/current photos."
-  },
-  {
-    icon: <Send size={32} />,
-    title: "3. Review & Submit",
-    description: "Review your details and submit the form securely."
+    title: "2. Share Details",
+    description: "Fill in your birth details and specific questions."
   },
   {
     icon: <MessageCircle size={32} />,
-    title: "4. Get Consultation",
-    description: "Receive your detailed analysis and remedies."
+    title: "3. Get Solutions",
+    description: "Receive detailed analysis and remedies within 24-48 hours."
   }
 ];
 
@@ -31,23 +26,23 @@ const HowItWorks: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-amber-500 font-bold uppercase tracking-widest text-sm mb-2">Process</h2>
           <h3 className="font-serif text-4xl font-bold text-white mb-4">How It Works</h3>
-          <p className="text-slate-400">A simple 4-step journey to your consultation.</p>
+          <p className="text-slate-400">A simple 3-step journey to your consultation.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
-            <div key={index} className="relative flex flex-col items-center text-center p-6">
+            <div key={index} className="relative flex flex-col items-center text-center p-6 group">
               {/* Connector Line (Desktop) */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-12 left-1/2 w-full h-0.5 bg-slate-700 -z-10 transform translate-x-1/2"></div>
+                <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-slate-700 -z-10 transform translate-x-1/2"></div>
               )}
               
-              <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center text-white mb-6 shadow-lg shadow-amber-600/30 z-10 border-4 border-slate-900">
+              <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center text-white mb-6 shadow-lg shadow-amber-600/30 z-10 border-4 border-slate-900 group-hover:scale-110 transition-transform duration-300">
                 {step.icon}
               </div>
               
               <h4 className="text-xl font-bold mb-3 font-serif">{step.title}</h4>
-              <p className="text-slate-400 text-sm leading-relaxed">{step.description}</p>
+              <p className="text-slate-400 text-sm leading-relaxed max-w-xs">{step.description}</p>
             </div>
           ))}
         </div>
