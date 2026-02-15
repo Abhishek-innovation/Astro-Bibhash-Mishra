@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SERVICES } from '../constants';
-import { BookingStatus, FormData } from '../types';
+import { BookingStatus, BookingFormState } from '../types';
 import { CheckCircle, Send, Check, ArrowRight, ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
 
 const steps = [
@@ -15,7 +15,7 @@ const BookingForm: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Initialize form state
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<BookingFormState>({
     fullName: '',
     dateOfBirth: '',
     timeOfBirth: '',
@@ -35,7 +35,7 @@ const BookingForm: React.FC = () => {
   const handleServiceSelect = (id: string) => {
     setFormData(prev => ({ ...prev, serviceId: id }));
     // Auto advance on mobile for better flow
-    if (window.innerWidth < 768) {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
        setTimeout(() => nextStep(), 300);
     }
   };
@@ -72,6 +72,7 @@ const BookingForm: React.FC = () => {
     setStatus(BookingStatus.SUBMITTING);
     setErrorMessage("");
     
+    // Use native FormData here. We renamed our interface to BookingFormState to avoid collision.
     const submissionData = new FormData();
     submissionData.append('Name', formData.fullName);
     submissionData.append('Date of Birth', formData.dateOfBirth);

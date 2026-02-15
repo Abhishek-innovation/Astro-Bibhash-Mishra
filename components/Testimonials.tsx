@@ -77,7 +77,7 @@ const Testimonials: React.FC = () => {
             <div className="flex w-max animate-marquee gap-8 hover:[animation-play-state:paused]">
                 {/* Original List */}
                 {testimonials.map((t) => (
-                    <div key={`org-${t.id}`} className="w-[300px] md:w-[400px] bg-stone-50 p-8 rounded-2xl border border-stone-100 hover:shadow-xl hover:shadow-stone-200/50 transition-all duration-300 relative group flex-shrink-0">
+                    <div key={`orig-${t.id}`} className="w-[300px] md:w-[400px] bg-stone-50 p-8 rounded-2xl border border-stone-100 hover:shadow-xl hover:shadow-stone-200/50 transition-all duration-300 relative group flex-shrink-0">
                         <Quote className="absolute top-6 right-6 text-stone-200 group-hover:text-amber-200 transition-colors" size={48} />
                         
                         <div className="flex gap-1 mb-6">

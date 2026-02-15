@@ -6,7 +6,7 @@ export interface Service {
   price: number;
 }
 
-export interface FormData {
+export interface BookingFormState {
   fullName: string;
   dateOfBirth: string;
   timeOfBirth: string;

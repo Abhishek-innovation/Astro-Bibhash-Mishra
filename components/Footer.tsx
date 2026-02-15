@@ -1,5 +1,6 @@
 import React from 'react';
 import { Instagram, Phone, MessageCircle } from 'lucide-react';
+import { CONTACT_INFO } from '../constants';
 
 const Footer: React.FC = () => {
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -35,11 +36,11 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-white">Contact Us</h4>
             <div className="flex flex-col space-y-3 text-sm">
-              <a href="tel:+919955957433" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
-                <Phone size={18} className="text-amber-500" /> +91 99559 57433
+              <a href={`tel:${CONTACT_INFO.phone}`} className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
+                <Phone size={18} className="text-amber-500" /> {CONTACT_INFO.displayPhone}
               </a>
               <a 
-                href="https://wa.me/919955957433?text=Hello" 
+                href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=Hello`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors"
@@ -47,7 +48,7 @@ const Footer: React.FC = () => {
                 <MessageCircle size={18} className="text-amber-500" /> WhatsApp Support
               </a>
               <a href="#" className="flex items-center gap-2 text-slate-400 hover:text-amber-400 transition-colors">
-                <Instagram size={18} className="text-amber-500" /> @astrobibhash
+                <Instagram size={18} className="text-amber-500" /> {CONTACT_INFO.instagram}
               </a>
             </div>
           </div>

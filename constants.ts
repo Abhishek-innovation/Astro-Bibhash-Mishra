@@ -1,5 +1,12 @@
 import { Service } from './types';
 
+export const CONTACT_INFO = {
+  phone: '+919955957433',
+  whatsapp: '919955957433',
+  displayPhone: '+91 99559 57433',
+  instagram: '@astrobibhash'
+};
+
 export const SERVICES: Service[] = [
   {
     id: 'voice-15',

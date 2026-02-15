@@ -1,12 +1,12 @@
 import React from 'react';
+import { CONTACT_INFO } from '../constants';
 
 const WhatsAppButton: React.FC = () => {
-  const phoneNumber = '919955957433';
   const message = "Namaste! I'm interested in a consultation with Astro Bibhash Mishra.";
   
   return (
     <a
-      href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`}
+      href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(message)}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-[#25D366] text-white p-3.5 rounded-full shadow-lg shadow-green-600/30 hover:shadow-green-600/50 hover:scale-105 transition-all duration-300 group"
